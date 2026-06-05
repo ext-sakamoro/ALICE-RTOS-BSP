@@ -10,8 +10,9 @@ repository.workspace   = true
 rust-version.workspace = true
 
 [dependencies]
-alice-rtos       = { workspace = true }
-alice-bsp-atoms3 = { path = "../../crates/alice-bsp-atoms3" }
-esp-hal          = { workspace = true }
-esp-backtrace    = { workspace = true }
-esp-println      = { workspace = true }
+alice-rtos             = { workspace = true }
+alice-bsp-atoms3       = { path = "../../crates/alice-bsp-atoms3" }
+esp-hal                = { workspace = true }
+esp-backtrace          = { workspace = true }
+esp-println            = { workspace = true }
+esp-bootloader-esp-idf = { workspace = true }

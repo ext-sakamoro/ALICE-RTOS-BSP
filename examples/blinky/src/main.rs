@@ -5,8 +5,11 @@ use alice_bsp_atoms3::CPU_HZ;
 use alice_rtos::{Kernel, TaskPriority};
 use core::sync::atomic::{AtomicU32, Ordering};
 use esp_backtrace as _;
+use esp_bootloader_esp_idf::esp_app_desc;
 use esp_hal::{delay::Delay, main};
 use esp_println::println;
+
+esp_app_desc!();
 
 static TICK_COUNT: AtomicU32 = AtomicU32::new(0);
 static HEARTBEAT:  AtomicU32 = AtomicU32::new(0);
