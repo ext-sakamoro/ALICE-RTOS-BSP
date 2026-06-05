@@ -1,14 +1,13 @@
 #![no_std]
 #![doc = "M5Stack AtomS3 BSP — ESP32-S3-PICO-1, 8MB Flash + 8MB PSRAM, 0.85\" LCD, WS2812 LED, MPU6886 IMU"]
 
-pub use alice_rtos;
-pub use esp_hal;
-
 /// M5Stack AtomS3 ピンアサイン
 pub mod pinout {
     pub const WS2812_LED: u8 = 35;
     pub const BUTTON:     u8 = 41;
 
+    /// 内部 I2C0 (AtomS3R / 外付け IMU 用)。
+    /// **注意**: ベース AtomS3 (LCD のみ) は IMU 非搭載。AtomS3R は BMI270。
     pub mod imu_i2c {
         pub const SDA: u8 = 38;
         pub const SCL: u8 = 39;
@@ -33,6 +32,12 @@ pub mod pinout {
 
 /// ESP32-S3 既定動作クロック (Hz)
 pub const CPU_HZ: u32 = 240_000_000;
+
+/// MPU6886 I2C 7-bit アドレス (Grove 外付け or 旧 ATOM-Matrix 用)
+pub const MPU6886_I2C_ADDR: u8 = 0x68;
+
+/// BMI270 I2C 7-bit アドレス (AtomS3R 内蔵)
+pub const BMI270_I2C_ADDR: u8 = 0x69;
 
 #[cfg(test)]
 mod tests {

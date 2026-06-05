@@ -1,0 +1,18 @@
+[package]
+name        = "synth-demo"
+description = "I2S DAC 外付け前提 — ALICE-Synth 風 44.1kHz サイン波生成 (480Hz A音)"
+publish     = false
+version.workspace      = true
+edition.workspace      = true
+authors.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+rust-version.workspace = true
+
+[dependencies]
+alice-rtos             = { workspace = true }
+alice-bsp-atoms3       = { path = "../../crates/alice-bsp-atoms3" }
+esp-hal                = { workspace = true, features = ["esp32s3", "unstable"] }
+esp-backtrace          = { workspace = true }
+esp-println            = { workspace = true }
+esp-bootloader-esp-idf = { workspace = true }

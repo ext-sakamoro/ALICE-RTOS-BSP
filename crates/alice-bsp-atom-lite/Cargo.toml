@@ -1,7 +1,7 @@
 [package]
-name        = "alice-bsp-atoms3"
-description = "Board Support Package for M5Stack AtomS3 (ESP32-S3-PICO-1) with ALICE-RTOS"
-keywords    = ["alice", "rtos", "esp32-s3", "m5stack", "no_std"]
+name        = "alice-bsp-atom-lite"
+description = "Board Support Package for M5Atom Lite (ESP32-PICO-D4, Xtensa LX6) with ALICE-RTOS"
+keywords    = ["alice", "rtos", "esp32", "m5stack", "no_std"]
 categories  = ["embedded", "no-std", "hardware-support"]
 version.workspace      = true
 edition.workspace      = true

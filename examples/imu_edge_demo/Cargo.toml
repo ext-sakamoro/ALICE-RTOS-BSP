@@ -1,0 +1,19 @@
+[package]
+name        = "imu-edge-demo"
+description = "MPU6886 IMU 100Hz サンプリング + ALICE-Edge 風 線形傾き分類器 (flat/left/right/fwd/back/upside-down)"
+publish     = false
+version.workspace      = true
+edition.workspace      = true
+authors.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+rust-version.workspace = true
+
+[dependencies]
+alice-rtos             = { workspace = true }
+alice-bsp-atoms3       = { path = "../../crates/alice-bsp-atoms3" }
+esp-hal                = { workspace = true }
+esp-backtrace          = { workspace = true }
+esp-println            = { workspace = true }
+esp-bootloader-esp-idf = { workspace = true }
+critical-section       = "1.2"
