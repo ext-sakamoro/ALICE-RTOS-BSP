@@ -1,0 +1,11 @@
+/target
+Cargo.lock
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.bak
+
+# Per CLAUDE.md rule: CLAUDE.md is not pushed for non-Eco-System repos
+CLAUDE.md
+.claude/

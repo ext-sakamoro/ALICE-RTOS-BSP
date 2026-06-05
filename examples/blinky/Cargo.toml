@@ -1,0 +1,17 @@
+[package]
+name        = "blinky"
+description = "ALICE-RTOS 最小起動デモ — AtomS3 で 2タスク(カウンタ + ハートビート)を RMS スケジューリング"
+publish     = false
+version.workspace      = true
+edition.workspace      = true
+authors.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+rust-version.workspace = true
+
+[dependencies]
+alice-rtos       = { workspace = true }
+alice-bsp-atoms3 = { path = "../../crates/alice-bsp-atoms3" }
+esp-hal          = { workspace = true }
+esp-backtrace    = { workspace = true }
+esp-println      = { workspace = true }

@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/alice-bsp-atoms3",
+    "examples/blinky",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Moroya Sakamoto <sakamoro@alicelaw.net>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/ext-sakamoro/ALICE-RTOS-BSP"
+rust-version = "1.84"
+
+[workspace.dependencies]
+alice-rtos    = { path = "../ALICE-RTOS", features = ["esp32"] }
+esp-hal       = { version = "0.23", features = ["esp32s3"] }
+esp-backtrace = { version = "0.15", features = ["esp32s3", "panic-handler", "println"] }
+esp-println   = { version = "0.13", features = ["esp32s3", "log"] }
+
+[profile.release]
+opt-level     = "s"
+lto           = "fat"
+codegen-units = 1
+debug         = false
+strip         = true
+panic         = "abort"
+
+[profile.dev]
+opt-level = "s"
+debug     = true
