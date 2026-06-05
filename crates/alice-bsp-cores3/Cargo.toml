@@ -1,0 +1,16 @@
+[package]
+name        = "alice-bsp-cores3"
+description = "Board Support Package for M5Stack CoreS3 (ESP32-S3, AXP2101 PMIC, BMI270, タッチLCD, ES8311 codec) with ALICE-RTOS"
+keywords    = ["alice", "rtos", "esp32-s3", "m5stack", "no_std"]
+categories  = ["embedded", "no-std", "hardware-support"]
+version.workspace      = true
+edition.workspace      = true
+authors.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+rust-version.workspace = true
+
+[dependencies]
+
+[features]
+default = []

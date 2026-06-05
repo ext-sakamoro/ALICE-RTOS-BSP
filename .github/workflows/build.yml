@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build all (ESP32-S3 / ESP32)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout BSP
+        uses: actions/checkout@v4
+        with:
+          path: ALICE-RTOS-BSP
+
+      - name: Checkout ALICE-RTOS (path dep)
+        uses: actions/checkout@v4
+        with:
+          repository: ext-sakamoro/ALICE-RTOS
+          path: ALICE-RTOS
+
+      - name: Install ESP Rust toolchain
+        uses: esp-rs/xtensa-toolchain@v1.5
+        with:
+          default: true
+          buildtargets: esp32s3,esp32
+          ldproxy: false
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ALICE-RTOS-BSP/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('ALICE-RTOS-BSP/Cargo.toml') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Build workspace (release)
+        working-directory: ALICE-RTOS-BSP
+        run: cargo build --release --verbose
+
+      - name: Verify binary sizes
+        working-directory: ALICE-RTOS-BSP
+        run: |
+          for bin in blinky ws2812-demo imu-edge-demo synth-demo motion-demo; do
+            path="target/xtensa-esp32s3-none-elf/release/$bin"
+            if [ -f "$path" ]; then
+              size=$(stat -c%s "$path")
+              pct=$(awk "BEGIN {printf \"%.2f\", $size/8323072*100}")
+              echo "$bin: $size bytes (${pct}% of 8MB flash)"
+            else
+              echo "$bin: MISSING"; exit 1
+            fi
+          done

@@ -10,7 +10,7 @@ repository.workspace   = true
 rust-version.workspace = true
 
 [dependencies]
-alice-rtos             = { workspace = true }
+alice-rtos             = { workspace = true, features = ["edge"] }
 alice-bsp-atoms3       = { path = "../../crates/alice-bsp-atoms3" }
 esp-hal                = { workspace = true }
 esp-backtrace          = { workspace = true }

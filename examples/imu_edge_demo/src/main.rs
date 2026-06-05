@@ -1,9 +1,18 @@
 #![no_std]
 #![no_main]
 
+//! IMU Edge demo — ALICE-RTOS の `edge` feature 正規版
+//!
+//! `alice_rtos::edge_tasks` モジュールが提供する 1kHz 用 task テンプレート
+//! `edge_task` を使い、100Hz 加速度サンプリング + 線形傾き分類器を実装。
+//!
+//! M5Stack AtomS3 ベース機は IMU 非搭載 (R 版のみ BMI270 内蔵)。
+//! 起動時に I2C scan を行い、応答デバイスがなければその旨を表示する設計。
+
 use alice_bsp_atoms3::{CPU_HZ, MPU6886_I2C_ADDR};
-use alice_rtos::{Kernel, TaskPriority};
+use alice_rtos::{edge_tasks, Kernel};
 use core::cell::RefCell;
+use core::sync::atomic::{AtomicI32, AtomicU8, Ordering};
 use critical_section::Mutex;
 use esp_backtrace as _;
 use esp_bootloader_esp_idf::esp_app_desc;
@@ -18,16 +27,11 @@ use esp_println::println;
 
 esp_app_desc!();
 
-/// I2C ハンドルをタスク fn(&mut [u8]) と共有するための static
 static I2C_BUS: Mutex<RefCell<Option<I2c<'static, Blocking>>>> = Mutex::new(RefCell::new(None));
-
-/// MPU6886 から読み取った最新の加速度 (g 単位、x1000 で固定小数化)
-static AX_MG: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(0);
-static AY_MG: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(0);
-static AZ_MG: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(0);
-
-/// 分類結果: 0=flat 1=tilt_left 2=tilt_right 3=tilt_fwd 4=tilt_back 5=upside_down
-static TILT: core::sync::atomic::AtomicU8 = core::sync::atomic::AtomicU8::new(0);
+static AX_MG:   AtomicI32 = AtomicI32::new(0);
+static AY_MG:   AtomicI32 = AtomicI32::new(0);
+static AZ_MG:   AtomicI32 = AtomicI32::new(0);
+static TILT:    AtomicU8 = AtomicU8::new(0);
 
 const TILT_LABELS: [&str; 6] = ["FLAT", "LEFT", "RIGHT", "FORWARD", "BACKWARD", "UPSIDE_DOWN"];
 
@@ -40,10 +44,10 @@ fn mpu_init(i2c: &mut I2c<'static, Blocking>) -> bool {
         println!("MPU6886 WHO_AM_I unexpected: 0x{:02x} (expected 0x19)", who[0]);
         return false;
     }
-    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x6B, 0x80]); // reset
+    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x6B, 0x80]);
     Delay::new().delay_millis(100);
-    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x6B, 0x01]); // wake, PLL
-    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x1C, 0x00]); // accel ±2g
+    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x6B, 0x01]);
+    let _ = i2c.write(MPU6886_I2C_ADDR, &[0x1C, 0x00]); // ±2g
     Delay::new().delay_millis(10);
     true
 }
@@ -51,18 +55,17 @@ fn mpu_init(i2c: &mut I2c<'static, Blocking>) -> bool {
 fn read_accel(i2c: &mut I2c<'static, Blocking>) -> Option<(i16, i16, i16)> {
     let mut buf = [0u8; 6];
     i2c.write_read(MPU6886_I2C_ADDR, &[0x3B], &mut buf).ok()?;
-    let ax = i16::from_be_bytes([buf[0], buf[1]]);
-    let ay = i16::from_be_bytes([buf[2], buf[3]]);
-    let az = i16::from_be_bytes([buf[4], buf[5]]);
-    Some((ax, ay, az))
+    Some((
+        i16::from_be_bytes([buf[0], buf[1]]),
+        i16::from_be_bytes([buf[2], buf[3]]),
+        i16::from_be_bytes([buf[4], buf[5]]),
+    ))
 }
 
-/// 100Hz 加速度サンプリング + 線形傾き分類
-fn task_sample_accel(_scratch: &mut [u8]) {
+fn task_edge_classify(_scratch: &mut [u8]) {
     critical_section::with(|cs| {
         if let Some(i2c) = I2C_BUS.borrow(cs).borrow_mut().as_mut() {
             if let Some((ax, ay, az)) = read_accel(i2c) {
-                // raw → mg (±2g range, 16384 LSB/g)
                 let to_mg = |v: i16| -> i32 { (v as i32) * 1000 / 16384 };
                 let ax_mg = to_mg(ax);
                 let ay_mg = to_mg(ay);
@@ -71,18 +74,17 @@ fn task_sample_accel(_scratch: &mut [u8]) {
                 AY_MG.store(ay_mg, Ordering::Relaxed);
                 AZ_MG.store(az_mg, Ordering::Relaxed);
 
-                // ALICE-Edge 風線形分類: |a*| が閾値超えで判定
                 let abs = |v: i32| if v < 0 { -v } else { v };
                 let label: u8 = if az_mg < -700 {
-                    5 // upside down
+                    5
                 } else if az_mg > 800 && abs(ax_mg) < 400 && abs(ay_mg) < 400 {
-                    0 // flat
+                    0
                 } else if abs(ax_mg) > abs(ay_mg) {
-                    if ax_mg > 0 { 2 } else { 1 } // right / left
+                    if ax_mg > 0 { 2 } else { 1 }
                 } else if ay_mg > 0 {
-                    3 // forward
+                    3
                 } else {
-                    4 // backward
+                    4
                 };
                 TILT.store(label, Ordering::Relaxed);
             }
@@ -90,15 +92,21 @@ fn task_sample_accel(_scratch: &mut [u8]) {
     });
 }
 
-use core::sync::atomic::Ordering;
-
 #[main]
 fn main() -> ! {
     let p = esp_hal::init(esp_hal::Config::default());
     let delay = Delay::new();
 
     println!();
-    println!("=== ALICE-RTOS IMU Edge demo @ AtomS3 ===");
+    println!("=== ALICE-RTOS IMU Edge demo @ AtomS3 (ALICE-RTOS edge feature) ===");
+    println!(
+        " EDGE_PERIOD_US={} ({}Hz default), EDGE_WCET_US={}, PRIORITY=NORMAL",
+        edge_tasks::EDGE_PERIOD_US,
+        1_000_000 / edge_tasks::EDGE_PERIOD_US,
+        edge_tasks::EDGE_WCET_US,
+    );
+    let util = edge_tasks::edge_utilization(edge_tasks::EDGE_PERIOD_US, edge_tasks::EDGE_WCET_US);
+    println!(" Default CPU utilization estimate: {:.2}%", util * 100.0);
 
     let i2c = I2c::new(p.I2C0, I2cConfig::default().with_frequency(Rate::from_khz(400)))
         .expect("I2C init")
@@ -108,7 +116,6 @@ fn main() -> ! {
     critical_section::with(|cs| {
         *I2C_BUS.borrow(cs).borrow_mut() = Some(i2c);
         if let Some(i2c) = I2C_BUS.borrow(cs).borrow_mut().as_mut() {
-            // I2C scan: 0x08..0x77 を叩いて応答するアドレスを表示
             println!("I2C scan (SDA=GPIO38, SCL=GPIO39):");
             let mut found = 0;
             for addr in 0x08u8..=0x77 {
@@ -130,9 +137,9 @@ fn main() -> ! {
     });
 
     let mut kernel = Kernel::new(CPU_HZ);
-    kernel
-        .add_task(b"accel", task_sample_accel, TaskPriority::HIGH, 10_000, 200)
-        .expect("accel task");
+    // 100Hz サンプリングなので edge_task_default (1kHz) ではなく custom 周期
+    let edge = edge_tasks::edge_task(task_edge_classify, 10_000, 200);
+    kernel.scheduler.register(edge).expect("edge task register");
 
     println!("100Hz accel sampling + edge tilt classifier started");
 

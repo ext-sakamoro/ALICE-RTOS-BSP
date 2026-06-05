@@ -1,0 +1,16 @@
+[package]
+name        = "alice-bsp-cardputer"
+description = "Board Support Package for M5Stack Cardputer (ESP32-S3, 56-key keyboard, ST7789 LCD, mic, speaker, SD) with ALICE-RTOS"
+keywords    = ["alice", "rtos", "esp32-s3", "m5stack", "no_std"]
+categories  = ["embedded", "no-std", "hardware-support"]
+version.workspace      = true
+edition.workspace      = true
+authors.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+rust-version.workspace = true
+
+[dependencies]
+
+[features]
+default = []
