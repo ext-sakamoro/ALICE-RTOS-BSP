@@ -18,8 +18,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
+      # rust-toolchain.toml で `channel = "esp"` (= ESP32 embedded toolchain) を要求するが
+      # CI runner には esp toolchain が無いため `cargo +stable fmt` で明示 override
+      # (= [[feedback_alice_ci_phase_a_post_push_failures]] パターン 12 参照)
       - name: Check formatting
-        run: cargo fmt -- --check
+        run: cargo +stable fmt -- --check
 
   actionlint:
     name: actionlint (workflow YAML 検証)
