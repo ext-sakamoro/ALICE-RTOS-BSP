@@ -23,14 +23,14 @@ use esp_println::println;
 
 esp_app_desc!();
 
-const STEPS_RAMP:   i32 = 10_000;
+const STEPS_RAMP: i32 = 10_000;
 const STEPS_CRUISE: i32 = 10_000;
-const STEPS_TOTAL:  i32 = STEPS_RAMP * 2 + STEPS_CRUISE;
+const STEPS_TOTAL: i32 = STEPS_RAMP * 2 + STEPS_CRUISE;
 
-static PROFILE_TICK:    AtomicU32 = AtomicU32::new(0);
-static STEPS_DONE:      AtomicI32 = AtomicI32::new(0);
-static VELOCITY_MILLI:  AtomicI32 = AtomicI32::new(0);
-static STEPS_PER_LOG:   AtomicU32 = AtomicU32::new(0);
+static PROFILE_TICK: AtomicU32 = AtomicU32::new(0);
+static STEPS_DONE: AtomicI32 = AtomicI32::new(0);
+static VELOCITY_MILLI: AtomicI32 = AtomicI32::new(0);
+static STEPS_PER_LOG: AtomicU32 = AtomicU32::new(0);
 
 /// 50kHz ステッパ軌道タスク (motion_task_stepper 既定周期 20µs)
 fn task_motion_step(_scratch: &mut [u8]) {
@@ -68,14 +68,14 @@ fn main() -> ! {
     );
     println!(
         " 3-DOF capacity @ 10kHz: max_dof={}",
-        motion_tasks::max_dof(motion_tasks::MOTION_PERIOD_US, motion_tasks::MOTION_WCET_US / 3),
+        motion_tasks::max_dof(
+            motion_tasks::MOTION_PERIOD_US,
+            motion_tasks::MOTION_WCET_US / 3
+        ),
     );
     println!(
         " Profile: ramp={} steps, cruise={} steps, ramp-down={} steps (total {})",
-        STEPS_RAMP,
-        STEPS_CRUISE,
-        STEPS_RAMP,
-        STEPS_TOTAL,
+        STEPS_RAMP, STEPS_CRUISE, STEPS_RAMP, STEPS_TOTAL,
     );
 
     let mut kernel = Kernel::new(CPU_HZ);

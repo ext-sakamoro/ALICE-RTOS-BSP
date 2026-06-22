@@ -4,7 +4,7 @@
 /// M5Stack AtomS3 ピンアサイン
 pub mod pinout {
     pub const WS2812_LED: u8 = 35;
-    pub const BUTTON:     u8 = 41;
+    pub const BUTTON: u8 = 41;
 
     /// 内部 I2C0 (AtomS3R / 外付け IMU 用)。
     /// **注意**: ベース AtomS3 (LCD のみ) は IMU 非搭載。AtomS3R は BMI270。
@@ -14,13 +14,13 @@ pub mod pinout {
     }
 
     pub mod lcd {
-        pub const CS:   u8 = 15;
-        pub const DC:   u8 = 33;
-        pub const RST:  u8 = 34;
+        pub const CS: u8 = 15;
+        pub const DC: u8 = 33;
+        pub const RST: u8 = 34;
         pub const SCLK: u8 = 17;
         pub const MOSI: u8 = 21;
-        pub const BL:   u8 = 16;
-        pub const WIDTH:  u16 = 128;
+        pub const BL: u8 = 16;
+        pub const WIDTH: u16 = 128;
         pub const HEIGHT: u16 = 128;
     }
 

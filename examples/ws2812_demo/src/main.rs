@@ -23,12 +23,36 @@ fn hsv_to_rgb(h: u8) -> RGB8 {
     let region = h / 43;
     let remainder = h.wrapping_sub(region.wrapping_mul(43)).wrapping_mul(6);
     match region {
-        0 => RGB8 { r: 255, g: remainder, b: 0 },
-        1 => RGB8 { r: 255 - remainder, g: 255, b: 0 },
-        2 => RGB8 { r: 0, g: 255, b: remainder },
-        3 => RGB8 { r: 0, g: 255 - remainder, b: 255 },
-        4 => RGB8 { r: remainder, g: 0, b: 255 },
-        _ => RGB8 { r: 255, g: 0, b: 255 - remainder },
+        0 => RGB8 {
+            r: 255,
+            g: remainder,
+            b: 0,
+        },
+        1 => RGB8 {
+            r: 255 - remainder,
+            g: 255,
+            b: 0,
+        },
+        2 => RGB8 {
+            r: 0,
+            g: 255,
+            b: remainder,
+        },
+        3 => RGB8 {
+            r: 0,
+            g: 255 - remainder,
+            b: 255,
+        },
+        4 => RGB8 {
+            r: remainder,
+            g: 0,
+            b: 255,
+        },
+        _ => RGB8 {
+            r: 255,
+            g: 0,
+            b: 255 - remainder,
+        },
     }
 }
 
@@ -51,7 +75,7 @@ fn main() -> ! {
         color_order::Grb,
         Ws2812Timing,
     >::new_with_memsize(rmt.channel0, p.GPIO35, 2)
-        .expect("LED init");
+    .expect("LED init");
 
     let mut kernel = Kernel::new(CPU_HZ);
     kernel
@@ -77,7 +101,11 @@ fn main() -> ! {
 
         if now_us - last_log_us >= 5_000_000 {
             last_log_us = now_us;
-            println!("[t={}s] hue={}", now_us / 1_000_000, HUE.load(Ordering::Relaxed));
+            println!(
+                "[t={}s] hue={}",
+                now_us / 1_000_000,
+                HUE.load(Ordering::Relaxed)
+            );
         }
     }
 }

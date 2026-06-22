@@ -6,19 +6,19 @@ pub mod pinout {
     /// 内蔵 WS2812 RGB LED (基板上の SK6812)
     pub const WS2812_LED: u8 = 21;
     /// 内蔵ユーザーボタン (G0/Boot 共用)
-    pub const BUTTON:     u8 = 0;
+    pub const BUTTON: u8 = 0;
 
     /// 露出 GPIO 群 (側面 21ピン)
     pub mod io {
-        pub const G1:  u8 = 1;
-        pub const G2:  u8 = 2;
-        pub const G3:  u8 = 3;
-        pub const G4:  u8 = 4;
-        pub const G5:  u8 = 5;
-        pub const G6:  u8 = 6;
-        pub const G7:  u8 = 7;
-        pub const G8:  u8 = 8;
-        pub const G9:  u8 = 9;
+        pub const G1: u8 = 1;
+        pub const G2: u8 = 2;
+        pub const G3: u8 = 3;
+        pub const G4: u8 = 4;
+        pub const G5: u8 = 5;
+        pub const G6: u8 = 6;
+        pub const G7: u8 = 7;
+        pub const G8: u8 = 8;
+        pub const G9: u8 = 9;
         pub const G10: u8 = 10;
         pub const G11: u8 = 11;
         pub const G12: u8 = 12;

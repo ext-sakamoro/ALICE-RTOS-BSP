@@ -28,12 +28,19 @@ use esp_println::println;
 esp_app_desc!();
 
 static I2C_BUS: Mutex<RefCell<Option<I2c<'static, Blocking>>>> = Mutex::new(RefCell::new(None));
-static AX_MG:   AtomicI32 = AtomicI32::new(0);
-static AY_MG:   AtomicI32 = AtomicI32::new(0);
-static AZ_MG:   AtomicI32 = AtomicI32::new(0);
-static TILT:    AtomicU8 = AtomicU8::new(0);
+static AX_MG: AtomicI32 = AtomicI32::new(0);
+static AY_MG: AtomicI32 = AtomicI32::new(0);
+static AZ_MG: AtomicI32 = AtomicI32::new(0);
+static TILT: AtomicU8 = AtomicU8::new(0);
 
-const TILT_LABELS: [&str; 6] = ["FLAT", "LEFT", "RIGHT", "FORWARD", "BACKWARD", "UPSIDE_DOWN"];
+const TILT_LABELS: [&str; 6] = [
+    "FLAT",
+    "LEFT",
+    "RIGHT",
+    "FORWARD",
+    "BACKWARD",
+    "UPSIDE_DOWN",
+];
 
 fn mpu_init(i2c: &mut I2c<'static, Blocking>) -> bool {
     let mut who = [0u8; 1];
@@ -41,7 +48,10 @@ fn mpu_init(i2c: &mut I2c<'static, Blocking>) -> bool {
         return false;
     }
     if who[0] != 0x19 {
-        println!("MPU6886 WHO_AM_I unexpected: 0x{:02x} (expected 0x19)", who[0]);
+        println!(
+            "MPU6886 WHO_AM_I unexpected: 0x{:02x} (expected 0x19)",
+            who[0]
+        );
         return false;
     }
     let _ = i2c.write(MPU6886_I2C_ADDR, &[0x6B, 0x80]);
@@ -80,7 +90,11 @@ fn task_edge_classify(_scratch: &mut [u8]) {
                 } else if az_mg > 800 && abs(ax_mg) < 400 && abs(ay_mg) < 400 {
                     0
                 } else if abs(ax_mg) > abs(ay_mg) {
-                    if ax_mg > 0 { 2 } else { 1 }
+                    if ax_mg > 0 {
+                        2
+                    } else {
+                        1
+                    }
                 } else if ay_mg > 0 {
                     3
                 } else {
@@ -108,10 +122,13 @@ fn main() -> ! {
     let util = edge_tasks::edge_utilization(edge_tasks::EDGE_PERIOD_US, edge_tasks::EDGE_WCET_US);
     println!(" Default CPU utilization estimate: {:.2}%", util * 100.0);
 
-    let i2c = I2c::new(p.I2C0, I2cConfig::default().with_frequency(Rate::from_khz(400)))
-        .expect("I2C init")
-        .with_sda(p.GPIO38)
-        .with_scl(p.GPIO39);
+    let i2c = I2c::new(
+        p.I2C0,
+        I2cConfig::default().with_frequency(Rate::from_khz(400)),
+    )
+    .expect("I2C init")
+    .with_sda(p.GPIO38)
+    .with_scl(p.GPIO39);
 
     critical_section::with(|cs| {
         *I2C_BUS.borrow(cs).borrow_mut() = Some(i2c);

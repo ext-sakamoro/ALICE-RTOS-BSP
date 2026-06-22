@@ -14,9 +14,9 @@ pub mod pinout {
         pub const MOSI: u8 = 37;
         pub const MISO: u8 = 35;
         pub const SCLK: u8 = 36;
-        pub const CS:   u8 = 3;
-        pub const DC:   u8 = 35;
-        pub const WIDTH:  u16 = 320;
+        pub const CS: u8 = 3;
+        pub const DC: u8 = 35;
+        pub const WIDTH: u16 = 320;
         pub const HEIGHT: u16 = 240;
         // RST / BL は AXP2101 (LDO) 経由、GPIO 直接制御なし
     }
@@ -30,18 +30,18 @@ pub mod pinout {
     pub mod sd {
         pub const CLK: u8 = 36; // SD_SCLK 共有
         pub const CMD: u8 = 35;
-        pub const D0:  u8 = 37;
-        pub const D1:  u8 = 38;
-        pub const D2:  u8 = 33;
-        pub const D3:  u8 = 34;
+        pub const D0: u8 = 37;
+        pub const D1: u8 = 38;
+        pub const D2: u8 = 33;
+        pub const D3: u8 = 34;
     }
 
     /// I2S (ES8311 codec 用、speaker + mic 兼用)
     pub mod i2s {
-        pub const BCK:  u8 = 34;
-        pub const WS:   u8 = 33;
-        pub const SDO:  u8 = 13; // speaker out
-        pub const SDI:  u8 = 14; // mic in (ES7210 経由)
+        pub const BCK: u8 = 34;
+        pub const WS: u8 = 33;
+        pub const SDO: u8 = 13; // speaker out
+        pub const SDI: u8 = 14; // mic in (ES7210 経由)
         pub const MCLK: u8 = 0;
     }
 

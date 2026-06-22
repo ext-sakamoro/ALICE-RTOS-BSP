@@ -22,10 +22,10 @@ use esp_println::println;
 esp_app_desc!();
 
 const SAMPLE_RATE_HZ: u32 = 44_100;
-const TONE_HZ:        u32 = 480;
+const TONE_HZ: u32 = 480;
 
-static PHASE_Q16:    AtomicU32 = AtomicU32::new(0);
-static LAST_SAMPLE:  AtomicI32 = AtomicI32::new(0);
+static PHASE_Q16: AtomicU32 = AtomicU32::new(0);
+static LAST_SAMPLE: AtomicI32 = AtomicI32::new(0);
 static SAMPLE_COUNT: AtomicU32 = AtomicU32::new(0);
 
 /// 23µs (44.1kHz) 周期で 1サンプル生成

@@ -6,9 +6,9 @@ pub mod pinout {
     /// 内蔵 WS2812 RGB LED (1個)
     pub const WS2812_LED: u8 = 27;
     /// 内蔵ユーザーボタン
-    pub const BUTTON:     u8 = 39;
+    pub const BUTTON: u8 = 39;
     /// 赤外線LED
-    pub const IR_LED:     u8 = 12;
+    pub const IR_LED: u8 = 12;
 
     /// Grove Port 1 (4-pin: 5V/G/G32/G26)
     pub mod grove {

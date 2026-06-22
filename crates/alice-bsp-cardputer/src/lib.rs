@@ -7,25 +7,25 @@ pub mod pinout {
     pub mod lcd {
         pub const SCLK: u8 = 40;
         pub const MOSI: u8 = 41;
-        pub const CS:   u8 = 37;
-        pub const DC:   u8 = 34;
-        pub const RST:  u8 = 33;
-        pub const BL:   u8 = 38;
-        pub const WIDTH:  u16 = 240;
+        pub const CS: u8 = 37;
+        pub const DC: u8 = 34;
+        pub const RST: u8 = 33;
+        pub const BL: u8 = 38;
+        pub const WIDTH: u16 = 240;
         pub const HEIGHT: u16 = 135;
     }
 
     /// PDM マイク (内蔵)
     pub mod mic {
         pub const DATA: u8 = 46;
-        pub const CLK:  u8 = 43;
+        pub const CLK: u8 = 43;
     }
 
     /// I2S スピーカー (NS4168 D-class amp)
     pub mod speaker {
-        pub const BCK:   u8 = 41; // LCD MOSI と共有
+        pub const BCK: u8 = 41; // LCD MOSI と共有
         pub const LRCLK: u8 = 43;
-        pub const DATA:  u8 = 42;
+        pub const DATA: u8 = 42;
     }
 
     /// SD カード (SPI モード)
@@ -33,7 +33,7 @@ pub mod pinout {
         pub const SCLK: u8 = 40; // LCD SCLK と共有
         pub const MOSI: u8 = 14;
         pub const MISO: u8 = 39;
-        pub const CS:   u8 = 12;
+        pub const CS: u8 = 12;
     }
 
     /// 赤外線送信
@@ -53,7 +53,7 @@ pub mod pinout {
     /// 実際の配線は M5Stack 公式 datasheet 参照。代表ピンのみ記載。
     pub mod keyboard {
         pub const KB_OUT: [u8; 8] = [8, 9, 11, 13, 15, 3, 4, 5];
-        pub const KB_IN:  [u8; 7] = [6, 7, 1, 2, 35, 36, 37];
+        pub const KB_IN: [u8; 7] = [6, 7, 1, 2, 35, 36, 37];
     }
 }
 

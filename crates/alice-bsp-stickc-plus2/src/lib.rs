@@ -7,11 +7,11 @@ pub mod pinout {
     pub mod lcd {
         pub const SCLK: u8 = 13;
         pub const MOSI: u8 = 15;
-        pub const CS:   u8 = 5;
-        pub const DC:   u8 = 14;
-        pub const RST:  u8 = 12;
-        pub const BL:   u8 = 27;
-        pub const WIDTH:  u16 = 135;
+        pub const CS: u8 = 5;
+        pub const DC: u8 = 14;
+        pub const RST: u8 = 12;
+        pub const BL: u8 = 27;
+        pub const WIDTH: u16 = 135;
         pub const HEIGHT: u16 = 240;
     }
 
@@ -23,8 +23,8 @@ pub mod pinout {
 
     /// ボタン (3個: A=Front, B=Right Side, PWR=長押し電源OFF)
     pub mod button {
-        pub const A:   u8 = 37;
-        pub const B:   u8 = 39;
+        pub const A: u8 = 37;
+        pub const B: u8 = 39;
         pub const PWR: u8 = 35;
     }
 
@@ -35,12 +35,12 @@ pub mod pinout {
     pub const BUZZER: u8 = 2;
 
     /// 内蔵 LED (赤)
-    pub const LED:    u8 = 19; // IR LED と共用 (ハード上)
+    pub const LED: u8 = 19; // IR LED と共用 (ハード上)
 
     /// 内蔵 PDM マイク (SPM1423)
     pub mod mic {
         pub const DATA: u8 = 34;
-        pub const CLK:  u8 = 0;
+        pub const CLK: u8 = 0;
     }
 
     /// Grove (HY2.0-4P, I2C/UART/GPIO 兼用)
@@ -51,7 +51,7 @@ pub mod pinout {
 
     /// 8-pin HAT / M-Bus (GPIO 0, 25, 26, 36)
     pub mod hat {
-        pub const G0:  u8 = 0;
+        pub const G0: u8 = 0;
         pub const G25: u8 = 25;
         pub const G26: u8 = 26;
         pub const G36: u8 = 36;

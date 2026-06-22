@@ -12,7 +12,7 @@ use esp_println::println;
 esp_app_desc!();
 
 static TICK_COUNT: AtomicU32 = AtomicU32::new(0);
-static HEARTBEAT:  AtomicU32 = AtomicU32::new(0);
+static HEARTBEAT: AtomicU32 = AtomicU32::new(0);
 
 fn task_tick(_scratch: &mut [u8]) {
     TICK_COUNT.fetch_add(1, Ordering::Relaxed);
