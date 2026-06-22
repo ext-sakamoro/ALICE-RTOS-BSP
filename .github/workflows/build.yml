@@ -24,7 +24,7 @@ jobs:
           path: ALICE-RTOS
 
       - name: Install ESP Rust toolchain
-        uses: esp-rs/xtensa-toolchain@v1.5
+        uses: esp-rs/xtensa-toolchain@v1.7
         with:
           default: true
           buildtargets: esp32s3,esp32
