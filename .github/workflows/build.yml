@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout BSP
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: ALICE-RTOS-BSP
 
       - name: Checkout ALICE-RTOS (path dep)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ext-sakamoro/ALICE-RTOS
           path: ALICE-RTOS
@@ -31,7 +31,7 @@ jobs:
           ldproxy: false
 
       - name: Cache cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
