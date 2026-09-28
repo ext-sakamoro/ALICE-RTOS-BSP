@@ -1,5 +1,7 @@
 /target
-Cargo.lock
+# Cargo.lock は commit する (本 repo は bin / example を配布する BSP で library ではない)
+# gitignore していた間、CI だけが最新を解決して local と別 version を掴み red になった
+# (esp-hal 1.1.1 local / 1.2.2 CI、2026-09-28)
 .DS_Store
 .idea/
 .vscode/

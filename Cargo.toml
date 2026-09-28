@@ -24,7 +24,11 @@ rust-version = "1.84"
 
 [workspace.dependencies]
 alice-rtos              = { path = "../ALICE-RTOS", features = ["esp32"] }
-esp-hal                 = { version = "1.1", features = ["esp32s3", "unstable"] }
+# esp-hal 1.2 で `clock::Clocks` が削除され (cpu_clock() / xtal_clock() の自由関数に置換)、
+# esp-hal-smartled2 が 0.29.0 時点でも未追従で compile 不能になる
+# caret ("1.1") は 1.2 を許してしまうため tilde で 1.1.x に閉じる
+# 解除条件: esp-hal-smartled2 が esp-hal 1.2 対応版を publish
+esp-hal                 = { version = "~1.1", features = ["esp32s3", "unstable"] }
 esp-backtrace           = { version = "0.19", features = ["esp32s3", "panic-handler", "println"] }
 esp-println             = { version = "0.17", features = ["esp32s3", "log-04"] }
 esp-bootloader-esp-idf  = { version = "0.5", features = ["esp32s3"] }
