@@ -13,8 +13,23 @@ jobs:
   fmt:
     name: Format
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ALICE-RTOS-BSP
     steps:
-      - uses: actions/checkout@v5
+      # cargo fmt は workspace 全体の manifest を解決するため path dep の sibling
+      # (`alice-rtos = { path = "../ALICE-RTOS" }`) が runner 上に実在する必要がある
+      # self を ALICE-RTOS-BSP/ に置いて sibling を並置する multi-repo layout
+      # (build.yml と同形、ALICE-RTOS は public repo なので token 不要)
+      - name: Checkout BSP
+        uses: actions/checkout@v5
+        with:
+          path: ALICE-RTOS-BSP
+      - name: Checkout ALICE-RTOS (path dep)
+        uses: actions/checkout@v5
+        with:
+          repository: ext-sakamoro/ALICE-RTOS
+          path: ALICE-RTOS
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
