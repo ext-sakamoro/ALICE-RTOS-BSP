@@ -20,7 +20,11 @@ edition = "2021"
 authors = ["Moroya Sakamoto <sakamoro@alicelaw.net>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/ext-sakamoro/ALICE-RTOS-BSP"
-rust-version = "1.84"
+# dep floor: esp-hal 1.1.x 自身が rust-version = "1.88.0" を宣言している
+# ("1.84" は根拠のない値だった) 実際に build に使う compiler は rust-toolchain.toml の
+# channel = "esp" (xtensa 対応 fork、rustc 1.95.0-nightly 相当) で、stable では
+# xtensa-esp32s3-none-elf を compile できないため本値は下限の目安
+rust-version = "1.88"
 
 [workspace.dependencies]
 alice-rtos              = { path = "../ALICE-RTOS", features = ["esp32"] }
