@@ -6,10 +6,15 @@ use alice_rtos::{Kernel, TaskPriority};
 use core::sync::atomic::{AtomicU8, Ordering};
 use esp_backtrace as _;
 use esp_bootloader_esp_idf::esp_app_desc;
-use esp_hal::{delay::Delay, main, rmt::Rmt, time::Rate};
-use esp_hal_smartled::{buffer_size, color_order, RmtSmartLeds, Ws2812Timing};
+use esp_hal::{
+    delay::Delay,
+    gpio::Level,
+    main,
+    rmt::{PulseCode, Rmt, TxChannelConfig, TxChannelCreator},
+    time::Rate,
+};
 use esp_println::println;
-use smart_leds::{brightness, gamma, SmartLedsWrite, RGB8};
+use smart_leds::{brightness, gamma, RGB8};
 
 esp_app_desc!();
 
@@ -56,7 +61,28 @@ fn hsv_to_rgb(h: u8) -> RGB8 {
     }
 }
 
-type LedColor = RGB8;
+/// WS2812 bit timing in RMT ticks at 80 MHz with clock divider 1 (12.5 ns per tick):
+/// a 0 bit is 0.40 us high then 0.85 us low, a 1 bit 0.80 us high then 0.45 us low
+const T0H: u16 = 32;
+const T0L: u16 = 68;
+const T1H: u16 = 64;
+const T1L: u16 = 36;
+
+/// The RMT pulse codes of one LED in the WS2812's GRB order, most significant bit first, then the
+/// end marker (the idle low level after it is the latch)
+fn led_pulses(c: RGB8) -> [PulseCode; 25] {
+    let mut out = [PulseCode::end_marker(); 25];
+    for (i, byte) in [c.g, c.r, c.b].into_iter().enumerate() {
+        for bit in 0..8 {
+            out[i * 8 + bit] = if byte & (0x80 >> bit) != 0 {
+                PulseCode::new(Level::High, T1H, Level::Low, T1L)
+            } else {
+                PulseCode::new(Level::High, T0H, Level::Low, T0L)
+            };
+        }
+    }
+    out
+}
 
 #[main]
 fn main() -> ! {
@@ -68,14 +94,18 @@ fn main() -> ! {
 
     let freq = Rate::from_mhz(80);
     let rmt = Rmt::new(p.RMT, freq).expect("RMT init failed");
-    let mut led = RmtSmartLeds::<
-        { buffer_size::<LedColor>(1) },
-        _,
-        LedColor,
-        color_order::Grb,
-        Ws2812Timing,
-    >::new_with_memsize(rmt.channel0, p.GPIO35, 2)
-    .expect("LED init");
+    let mut led = Some(
+        rmt.channel0
+            .configure_tx(
+                &TxChannelConfig::default()
+                    .with_clk_divider(1)
+                    .with_idle_output_level(Level::Low)
+                    .with_idle_output(true)
+                    .with_memsize(2),
+            )
+            .expect("LED init")
+            .with_pin(p.GPIO35),
+    );
 
     let mut kernel = Kernel::new(CPU_HZ);
     kernel
@@ -96,7 +126,16 @@ fn main() -> ! {
             last_render_us = now_us;
             let h = HUE.load(Ordering::Relaxed);
             let color = hsv_to_rgb(h);
-            let _ = led.write(brightness(gamma([color].iter().copied()), 30));
+            let shown = brightness(gamma([color].iter().copied()), 30)
+                .next()
+                .unwrap_or_default();
+            let pulses = led_pulses(shown);
+            if let Some(ch) = led.take() {
+                led = Some(match ch.transmit(&pulses) {
+                    Ok(tx) => tx.wait().unwrap_or_else(|(_, ch)| ch),
+                    Err((_, ch)) => ch,
+                });
+            }
         }
 
         if now_us - last_log_us >= 5_000_000 {

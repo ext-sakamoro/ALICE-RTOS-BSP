@@ -38,6 +38,9 @@ jobs:
       # (= [[feedback_alice_ci_phase_a_post_push_failures]] パターン 12 参照)
       - name: Check formatting
         run: cargo +stable fmt -- --check
+      # Cargo.lock が manifest と一致しているか (古い lock は --locked で失敗する)
+      - name: Check Cargo.lock is up to date
+        run: cargo +stable metadata --locked --format-version 1 > /dev/null
 
   actionlint:
     name: actionlint (workflow YAML 検証)

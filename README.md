@@ -103,7 +103,6 @@ esp-hal 系は版がズレるとシンボル衝突する。以下で動作確認
 | `esp-backtrace` | 0.19 | `esp32s3`, `panic-handler`, `println` |
 | `esp-println` | 0.17 | `esp32s3`, `log-04` |
 | `esp-bootloader-esp-idf` | 0.5 | `esp32s3` |
-| `esp-hal-smartled2` | 0.28 | (lib名: `esp_hal_smartled`、"2"なし) |
 | `smart-leds` | 0.4 | — |
 
 ## 既知の罠
@@ -111,7 +110,6 @@ esp-hal 系は版がズレるとシンボル衝突する。以下で動作確認
 1. **App Descriptor 必須**: `espflash flash` は `esp_bootloader_esp_idf::esp_app_desc!()` をバイナリに埋め込み必須。`--ignore-app-descriptor` 回避すると bootloop
 2. **esp-hal `unstable` feature**: 1.x の `delay` / `main` 等は unstable 配下
 3. **AtomS3 ベース機は IMU 非搭載**: AtomS3R のみ BMI270 内蔵 (I2C: SDA=GPIO38, SCL=GPIO39, addr=0x69)
-4. **esp-hal-smartled2 のlib名**: パッケージ名 `esp-hal-smartled2` だが lib名は `esp_hal_smartled` (末尾 "2" なし)
 
 ## ライセンス
 

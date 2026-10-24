@@ -16,5 +16,4 @@ esp-hal                = { workspace = true }
 esp-backtrace          = { workspace = true }
 esp-println            = { workspace = true }
 esp-bootloader-esp-idf = { workspace = true }
-esp-hal-smartled2      = { workspace = true }
 smart-leds             = { workspace = true }

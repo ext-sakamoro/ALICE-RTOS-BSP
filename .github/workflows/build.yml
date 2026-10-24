@@ -42,7 +42,7 @@ jobs:
 
       - name: Build workspace (release)
         working-directory: ALICE-RTOS-BSP
-        run: cargo build --release --verbose
+        run: cargo build --release --locked --verbose
 
       - name: Verify binary sizes
         working-directory: ALICE-RTOS-BSP

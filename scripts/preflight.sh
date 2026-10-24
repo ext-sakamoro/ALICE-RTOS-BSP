@@ -25,6 +25,9 @@ need actionlint "brew install actionlint"
 step "ci.yml / fmt: Check formatting"
 ( export CARGO_TERM_COLOR="always"; cargo +stable fmt -- --check )
 
+step "ci.yml / fmt: Check Cargo.lock is up to date"
+( export CARGO_TERM_COLOR="always"; cargo +stable metadata --locked --format-version 1 > /dev/null )
+
 step "ci.yml / actionlint: actionlint"
 actionlint .github/workflows/*.yml
 

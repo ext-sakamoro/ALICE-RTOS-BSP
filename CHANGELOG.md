@@ -5,7 +5,10 @@ ALICE-RTOS-BSP の変更履歴。
 
 ## [Unreleased]
 
-(なし)
+### 変更
+
+- `ws2812_demo` — WS2812 を esp-hal の RMT で直接駆動する形に変更 (依存 `esp-hal-smartled2` を削除)
+- CI — Build を `--locked` で実行し、ci.yml と preflight に Cargo.lock の一致検査を追加
 
 ## [0.1.0] - 2026-06-05
 
