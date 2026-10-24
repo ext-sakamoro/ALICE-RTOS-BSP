@@ -1,5 +1,6 @@
 [package]
 name        = "alice-bsp-stickc-plus2"
+publish = false
 description = "Board Support Package for M5StickC Plus2 (ESP32-PICO-V3-02 LX6, MPU6886, ST7789v2 LCD, IR, Buzzer) with ALICE-RTOS"
 keywords    = ["alice", "rtos", "esp32", "m5stack", "no_std"]
 categories  = ["embedded", "no-std", "hardware-support"]

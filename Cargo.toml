@@ -18,7 +18,7 @@ members = [
 version = "0.1.0"
 edition = "2021"
 authors = ["Moroya Sakamoto <sakamoro@alicelaw.net>"]
-license = "MIT OR Apache-2.0"
+license = "LicenseRef-Proprietary"
 repository = "https://github.com/ext-sakamoro/ALICE-RTOS-BSP"
 # dep floor: esp-hal 1.1.x 自身が rust-version = "1.88.0" を宣言している
 # ("1.84" は根拠のない値だった) 実際に build に使う compiler は rust-toolchain.toml の

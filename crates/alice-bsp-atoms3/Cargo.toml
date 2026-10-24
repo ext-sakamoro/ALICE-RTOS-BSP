@@ -1,5 +1,6 @@
 [package]
 name        = "alice-bsp-atoms3"
+publish = false
 description = "Board Support Package for M5Stack AtomS3 (ESP32-S3-PICO-1) with ALICE-RTOS"
 keywords    = ["alice", "rtos", "esp32-s3", "m5stack", "no_std"]
 categories  = ["embedded", "no-std", "hardware-support"]
